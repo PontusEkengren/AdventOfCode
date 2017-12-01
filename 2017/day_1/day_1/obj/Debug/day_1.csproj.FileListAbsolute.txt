@@ -1,0 +1,6 @@
+C:\Git\AdventOfCode\2017\day_1\day_1\bin\Debug\day_1.exe.config
+C:\Git\AdventOfCode\2017\day_1\day_1\bin\Debug\day_1.exe
+C:\Git\AdventOfCode\2017\day_1\day_1\bin\Debug\day_1.pdb
+C:\Git\AdventOfCode\2017\day_1\day_1\obj\Debug\day_1.exe
+C:\Git\AdventOfCode\2017\day_1\day_1\obj\Debug\day_1.pdb
+C:\Git\AdventOfCode\2017\day_1\day_1\obj\Debug\day_1.csprojResolveAssemblyReference.cache
