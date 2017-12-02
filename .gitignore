@@ -298,3 +298,11 @@ __pycache__/
 # should be stored in the .pubxml.user file.
 
 # End of https://www.gitignore.io/api/visualstudio
+/2017/day_1/day_1/bin/Debug/day_1.exe
+/2017/day_1/day_1/bin/Debug/day_1.pdb
+/2017/day_1/day_1/obj/Debug/CoreCompileInputs.cache
+/2017/day_1/day_1/bin/Debug/day_1.exe
+/2017/day_1/day_1/bin/Debug/day_1.pdb
+/2017/day_1/day_1/obj/Debug/CoreCompileInputs.cache
+/2017/day_1/day_1/obj/Debug/day_1.exe
+/2017/day_1/day_1/obj/Debug/day_1.pdb
