@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace day_3
 {
@@ -51,10 +52,36 @@ namespace day_3
         {
             if (location.Neighbours.Count > 0)
             {
-                foreach(Cell neighbour in location.Neighbours)
+                    if(location.Neighbours.Any(neighbour => (neighbour.x == location.x - 1 && neighbour.y == location.y)))
                 {
-                    
+                    //go up or right
+                    if(location.Neighbours.Any(neighbour => (neighbour.x == location.x&& neighbour.y == location.y-1)))
+                    {
+                        //go right
+                        return direction.EAST;
+                    }
+                    else
+                    {
+                        //go up
+                        return direction.NORTH;
+                    }
+
                 }
+                else
+                {
+                    //go down or left
+                    if(location.Neighbours.Any(neighbour => (neighbour.x == location.x+1 && neighbour.y == location.y)))
+                    {
+                        //go down
+                        return direction.SOUTH;
+                    }
+                    else
+                    {
+                        //go left
+                        return direction.WEST;
+                    }
+                }
+
             }
 
             return 0;
