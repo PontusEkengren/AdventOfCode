@@ -18,11 +18,6 @@ namespace day_3
             SecondHalf(puzzleInput);
         }
 
-        public enum direction
-        {
-            EAST, NORTH, WEST, SOUTH
-        }
-
         private void FirstHalf(int puzzleInput)
         {
             Console.WriteLine("Puzzle 3 50%");
@@ -34,18 +29,37 @@ namespace day_3
             //firstmove
             var newLocation = move(iterations, location, maze, direction.EAST);
             locations.Add(newLocation);
-            maze = newLocation.maze;//Bad move
+            maze = newLocation.maze;//:(
+            location = newLocation;
 
 
             while (iterations < puzzleInput)
             {
+                PrintMaze(location);
                 direction validDirection = findValidDirection(location, maze);
-
+                newLocation = move(iterations, location, maze, validDirection);
 
                 iterations++;
             }
 
             Console.WriteLine();
+        }
+
+        private void PrintMaze(Cell location)
+        {
+            var maze = location.maze;
+            Console.WriteLine();
+            Console.WriteLine("Printing maze");
+
+            var rowCount = maze.GetLength(0);
+            var colCount = maze.GetLength(1);
+            for (int row = 0; row < rowCount; row++)
+            {
+                for (int col = 0; col < colCount; col++)
+                    Console.Write(String.Format("{0}\t", maze[row, col]));
+                Console.WriteLine();
+            }
+
         }
 
         private direction findValidDirection(Cell location, int[,] maze)
@@ -90,7 +104,7 @@ namespace day_3
 
         private Cell move(int iterations, Cell locaiton, int[,] maze, direction direction)
         {
-            Cell newLocation = null;
+            Cell newLocation = locaiton;
 
             switch (direction)
             {
@@ -103,9 +117,17 @@ namespace day_3
                         newLocation.Neighbours.Add(locaiton);
                         newLocation.maze = maze;
                     }
+                    newLocation.maze[locaiton.y, locaiton.x + 1] = locaiton.value + 1;
                     break;
                 case direction.NORTH:
                     Console.WriteLine("North");
+                    if (inBounds(locaiton.y - 1, maze) == false)
+                    {
+                        maze = rezise(maze, direction.NORTH);
+                        newLocation = new Cell(locaiton.x, locaiton.y-1, locaiton.value + 1);
+                        newLocation.Neighbours.Add(locaiton);
+                        newLocation.maze = maze;
+                    }
                     break;
                 case direction.WEST:
                     Console.WriteLine("West");
@@ -120,11 +142,33 @@ namespace day_3
             return newLocation;
         }
 
-        private int[,] rezise(int[,] maze, direction east)
+        private int[,] rezise(int[,] maze, direction direction)
         {
-            int[,] tempMaze = new int[maze.Length + 1, maze.Length + 1];
-            Array.Copy(maze, tempMaze, maze.Length);
-            maze = tempMaze;
+            int[,] tempMaze;
+            switch (direction)
+            {
+                case direction.EAST:
+                    tempMaze = new int[maze.Length + 1, maze.Length + 1];
+                    Array.Copy(maze, tempMaze, maze.Length);
+                    maze = tempMaze;
+                    return maze;
+                case direction.SOUTH:
+                    tempMaze = new int[maze.Length + 1, maze.Length + 1];
+                    Array.Copy(maze, tempMaze, maze.Length);
+                    maze = tempMaze;
+                    return maze;
+                case direction.NORTH:
+                    tempMaze = new int[maze.Length + 1, maze.Length + 1];
+                    Array.Copy(maze, tempMaze, maze.Length);
+                    maze = tempMaze;
+                    return maze;
+                case direction.WEST:
+                    tempMaze = new int[maze.Length + 1, maze.Length + 1];
+                    Array.Copy(maze, tempMaze, maze.Length);
+                    maze = tempMaze;
+                    return maze;
+            }
+
             return maze;
         }
 
@@ -137,6 +181,10 @@ namespace day_3
             Console.WriteLine("Puzzle 3 100%");
 
             Console.ReadKey();
+        }
+        public enum direction
+        {
+            EAST, NORTH, WEST, SOUTH
         }
     }
 
