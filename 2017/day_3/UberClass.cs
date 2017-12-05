@@ -38,15 +38,19 @@ namespace day_3
             {
                 case direction.RIGHT:
                     newCellToReturn = new Cell(previousCell.x+1,previousCell.y,previousCell.value+1,nextDirection);
+                    newCellToReturn.Neighbours.Add(previousCell);
                     break;
                 case direction.UP:
                     newCellToReturn = new Cell(previousCell.x, previousCell. y- 1, previousCell.value + 1, nextDirection);
+                    newCellToReturn.Neighbours.Add(previousCell);
                     break;
                 case direction.DOWN:
                     newCellToReturn = new Cell(previousCell.x, previousCell.y + 1, previousCell.value + 1, nextDirection);
+                    newCellToReturn.Neighbours.Add(previousCell);
                     break;
                 case direction.LEFT:
                     newCellToReturn = new Cell(previousCell.x - 1, previousCell.y, previousCell.value + 1, nextDirection);
+                    newCellToReturn.Neighbours.Add(previousCell);
                     break;
             }
 
@@ -55,30 +59,28 @@ namespace day_3
 
         private direction CalculateNextDirection(Cell previousCell)
         {
-            int mathResult = -1337;
             switch (previousCell.direction)
             {
                 case direction.RIGHT:
-                    if (previousCell.value == Math.Pow((2 * previousCell.value - 1),2))
+                    if (Occupied(previousCell) == false /*&& GetAllCells(previousCell).Count>1*/)
                     {
                         return direction.UP;
                     }
                     return direction.RIGHT;
                 case direction.UP:
-                    if (previousCell.value == ((4 * Math.Pow(previousCell.value,2)-10*previousCell.value) + 7 ))
+                    if (Occupied(previousCell) == false)
                     {
                         return direction.LEFT;
                     }
                     return direction.UP;
                 case direction.LEFT:
-                    mathResult = (int)(((Math.Pow(previousCell.value, 2))*4 + 1));
-                    if (previousCell.value == mathResult)
+                    if (Occupied(previousCell) == false)
                     {
                         return direction.DOWN;
                     }
                     return direction.LEFT;
                 case direction.DOWN:
-                    if (previousCell.value == (((4 * Math.Pow(previousCell.value,2))-(6*previousCell.value+3))))
+                    if (Occupied(previousCell) == false)
                     {
                         return direction.RIGHT;
                     }
@@ -86,6 +88,55 @@ namespace day_3
             }
 
             throw new InvalidOperationException("How the hell?");
+        }
+
+        private bool Occupied(Cell cell)
+        {
+            List<Cell> allCells = GetAllCells(cell);
+
+            foreach (Cell neighbour in cell.Neighbours)
+            {
+                switch (cell.direction)
+                {
+                    case direction.RIGHT:
+                        if(allCells.Any(n => n.x+1 == cell.x && n.y == cell.y)) { return true; }
+                        return false;
+                    case direction.UP:
+                        if (allCells.Any(n => n.x== cell.x && n.y-1 == cell.y)) { return true; }
+                        return false;
+                    case direction.LEFT:
+                        if (allCells.Any(n => n.x-1 == cell.x && n.y == cell.y)) { return true; }
+                        return false;
+                    case direction.DOWN:
+                        if (allCells.Any(n => n.x == cell.x && n.y + 1 == cell.y)) { return true; }
+                        return false;
+                }
+            }
+
+            return false;
+        }
+
+        private List<Cell> GetAllCells(Cell cell)
+        {
+            List<Cell> AllCells = new List<Cell>();
+            Cell currentCell = cell;
+
+            while(currentCell.Neighbours.Count>0)
+            {
+                AllCells.Add(currentCell);
+                currentCell = NextCell(currentCell);
+            }
+            return AllCells;
+        }
+
+        private Cell NextCell(Cell currentCell)
+        {
+            return currentCell.Neighbours.FirstOrDefault();
+        }
+
+        private bool Occupied(Cell previousCell, direction lEFT)
+        {
+            throw new NotImplementedException();
         }
     }
     enum direction
