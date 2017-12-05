@@ -62,7 +62,7 @@ namespace day_3
             switch (previousCell.direction)
             {
                 case direction.RIGHT:
-                    if (Occupied(previousCell) == false /*&& GetAllCells(previousCell).Count>1*/)
+                    if (Occupied(previousCell) == false && GetAllCells(new List<Cell>(), previousCell).Count>=1)
                     {
                         return direction.UP;
                     }
@@ -92,23 +92,24 @@ namespace day_3
 
         private bool Occupied(Cell cell)
         {
-            List<Cell> allCells = GetAllCells(cell);
+            List<Cell> allCells = new List<Cell>();
+            allCells = GetAllCells(allCells, cell);
 
             foreach (Cell neighbour in cell.Neighbours)
             {
                 switch (cell.direction)
                 {
                     case direction.RIGHT:
-                        if(allCells.Any(n => n.x+1 == cell.x && n.y == cell.y)) { return true; }
+                        if(allCells.Any(n => n.x == cell.x && n.y-1 == cell.y)) { return true; }
                         return false;
                     case direction.UP:
-                        if (allCells.Any(n => n.x== cell.x && n.y-1 == cell.y)) { return true; }
+                        if (allCells.Any(n => n.x-1== cell.x && n.y == cell.y)) { return true; }
                         return false;
                     case direction.LEFT:
-                        if (allCells.Any(n => n.x-1 == cell.x && n.y == cell.y)) { return true; }
+                        if (allCells.Any(n => n.x == cell.x && n.y+1 == cell.y)) { return true; }
                         return false;
                     case direction.DOWN:
-                        if (allCells.Any(n => n.x == cell.x && n.y + 1 == cell.y)) { return true; }
+                        if (allCells.Any(n => n.x+1 == cell.x && n.y + 1 == cell.y)) { return true; }
                         return false;
                 }
             }
@@ -116,22 +117,33 @@ namespace day_3
             return false;
         }
 
-        private List<Cell> GetAllCells(Cell cell)
-        {
-            List<Cell> AllCells = new List<Cell>();
-            Cell currentCell = cell;
+        //private List<Cell> GetAllCells(Cell cell)
+        //{
+        //    List<Cell> AllCells = new List<Cell>();
+        //    Cell currentCell = cell;
 
-            while(currentCell.Neighbours.Count>0)
+        //    while(currentCell.Neighbours.Count>0)
+        //    {
+        //        AllCells.Add(currentCell);
+        //        currentCell = NextCell(currentCell);
+        //    }
+        //    return AllCells;
+        //}
+
+        //private Cell NextCell(Cell currentCell)
+        //{
+        //    return currentCell.Neighbours.FirstOrDefault();
+        //}
+
+        private List<Cell> GetAllCells(List<Cell> allCells, Cell cell)
+        {
+            if(cell.Neighbours != null && cell.Neighbours.Count > 0)
             {
-                AllCells.Add(currentCell);
-                currentCell = NextCell(currentCell);
+                allCells.Add(cell.Neighbours.FirstOrDefault());
+                GetAllCells(allCells, cell.Neighbours.FirstOrDefault());
             }
-            return AllCells;
-        }
 
-        private Cell NextCell(Cell currentCell)
-        {
-            return currentCell.Neighbours.FirstOrDefault();
+            return allCells;
         }
 
         private bool Occupied(Cell previousCell, direction lEFT)
