@@ -6,186 +6,91 @@ namespace day_3
 {
     public class UberClass
     {
-        int[,] maze;
-        List<Cell> locations = new List<Cell>();
-
+        int[,] maze = new int[100,100];
+        int input = 1337;
         public UberClass()
         {
-            maze = new int[,] { { 1 } };
-            int puzzleInput = 361527;
-
-            FirstHalf(puzzleInput);
-            SecondHalf(puzzleInput);
+            Calculate(input);
         }
 
-        private void FirstHalf(int puzzleInput)
+        private void Calculate(int input)
         {
-            Console.WriteLine("Puzzle 3 50%");
-            int iterations = 1;
-            Cell location = new Cell(0, 0, 1);
-            location.maze = maze;
-            locations.Add(location);
+            int iterations = 0;
+            int startingpoint_x = 1500;
+            int startingpoint_y = 1500;
+            var startingCell = new Cell(startingpoint_x, startingpoint_y, ++iterations, direction.RIGHT);
+            var previousCell = startingCell;
+            Stack<Cell> Cells = new Stack<Cell>();
 
-            //firstmove
-            var newLocation = move(iterations, location, maze, direction.EAST);
-            locations.Add(newLocation);
-            maze = newLocation.maze;//:(
-            location = newLocation;
-
-
-            while (iterations < puzzleInput)
+            while(iterations < input)
             {
-                PrintMaze(location);
-                direction validDirection = findValidDirection(location, maze);
-                newLocation = move(iterations, location, maze, validDirection);
-
                 iterations++;
+                Cells.Push(previousCell);
+                previousCell = nextmove(previousCell);
             }
-
-            Console.WriteLine();
         }
 
-        private void PrintMaze(Cell location)
+        private Cell nextmove(Cell previousCell)
         {
-            var maze = location.maze;
-            Console.WriteLine();
-            Console.WriteLine("Printing maze");
-
-            var rowCount = maze.GetLength(0);
-            var colCount = maze.GetLength(1);
-            for (int row = 0; row < rowCount; row++)
+            direction nextDirection = CalculateNextDirection(previousCell);
+            Cell newCellToReturn = null;
+            switch (nextDirection)
             {
-                for (int col = 0; col < colCount; col++)
-                    Console.Write(String.Format("{0}\t", maze[row, col]));
-                Console.WriteLine();
-            }
-
-        }
-
-        private direction findValidDirection(Cell location, int[,] maze)
-        {
-            if (location.Neighbours.Count > 0)
-            {
-                    if(location.Neighbours.Any(neighbour => (neighbour.x == location.x - 1 && neighbour.y == location.y)))
-                {
-                    //go up or right
-                    if(location.Neighbours.Any(neighbour => (neighbour.x == location.x&& neighbour.y == location.y-1)))
-                    {
-                        //go right
-                        return direction.EAST;
-                    }
-                    else
-                    {
-                        //go up
-                        return direction.NORTH;
-                    }
-
-                }
-                else
-                {
-                    //go down or left
-                    if(location.Neighbours.Any(neighbour => (neighbour.x == location.x+1 && neighbour.y == location.y)))
-                    {
-                        //go down
-                        return direction.SOUTH;
-                    }
-                    else
-                    {
-                        //go left
-                        return direction.WEST;
-                    }
-                }
-
-            }
-
-            return 0;
-        }
-
-
-        private Cell move(int iterations, Cell locaiton, int[,] maze, direction direction)
-        {
-            Cell newLocation = locaiton;
-
-            switch (direction)
-            {
-                case direction.EAST:
-                    Console.WriteLine("East");
-                    if (inBounds(locaiton.x + 1, maze) == false)
-                    {
-                        maze = rezise(maze, direction.EAST);
-                        newLocation = new Cell(locaiton.x + 1, locaiton.y, locaiton.value + 1);
-                        newLocation.Neighbours.Add(locaiton);
-                        newLocation.maze = maze;
-                    }
-                    newLocation.maze[locaiton.y, locaiton.x + 1] = locaiton.value + 1;
+                case direction.RIGHT:
+                    newCellToReturn = new Cell(previousCell.x+1,previousCell.y,previousCell.value+1,nextDirection);
                     break;
-                case direction.NORTH:
-                    Console.WriteLine("North");
-                    if (inBounds(locaiton.y - 1, maze) == false)
-                    {
-                        maze = rezise(maze, direction.NORTH);
-                        newLocation = new Cell(locaiton.x, locaiton.y-1, locaiton.value + 1);
-                        newLocation.Neighbours.Add(locaiton);
-                        newLocation.maze = maze;
-                    }
+                case direction.UP:
+                    newCellToReturn = new Cell(previousCell.x, previousCell. y- 1, previousCell.value + 1, nextDirection);
                     break;
-                case direction.WEST:
-                    Console.WriteLine("West");
+                case direction.DOWN:
+                    newCellToReturn = new Cell(previousCell.x, previousCell.y + 1, previousCell.value + 1, nextDirection);
                     break;
-                case direction.SOUTH:
-                    Console.WriteLine("South");
+                case direction.LEFT:
+                    newCellToReturn = new Cell(previousCell.x - 1, previousCell.y, previousCell.value + 1, nextDirection);
                     break;
             }
 
-            if (newLocation == null) { throw new InvalidOperationException("nämen va fan"); }
-
-            return newLocation;
+            return newCellToReturn;
         }
 
-        private int[,] rezise(int[,] maze, direction direction)
+        private direction CalculateNextDirection(Cell previousCell)
         {
-            int[,] tempMaze;
-            switch (direction)
+            int mathResult = -1337;
+            switch (previousCell.direction)
             {
-                case direction.EAST:
-                    tempMaze = new int[maze.Length + 1, maze.Length + 1];
-                    Array.Copy(maze, tempMaze, maze.Length);
-                    maze = tempMaze;
-                    return maze;
-                case direction.SOUTH:
-                    tempMaze = new int[maze.Length + 1, maze.Length + 1];
-                    Array.Copy(maze, tempMaze, maze.Length);
-                    maze = tempMaze;
-                    return maze;
-                case direction.NORTH:
-                    tempMaze = new int[maze.Length + 1, maze.Length + 1];
-                    Array.Copy(maze, tempMaze, maze.Length);
-                    maze = tempMaze;
-                    return maze;
-                case direction.WEST:
-                    tempMaze = new int[maze.Length + 1, maze.Length + 1];
-                    Array.Copy(maze, tempMaze, maze.Length);
-                    maze = tempMaze;
-                    return maze;
+                case direction.RIGHT:
+                    if (previousCell.value == Math.Pow((2 * previousCell.value - 1),2))
+                    {
+                        return direction.UP;
+                    }
+                    return direction.RIGHT;
+                case direction.UP:
+                    if (previousCell.value == ((4 * Math.Pow(previousCell.value,2)-10*previousCell.value) + 7 ))
+                    {
+                        return direction.LEFT;
+                    }
+                    return direction.UP;
+                case direction.LEFT:
+                    mathResult = (int)(((Math.Pow(previousCell.value, 2))*4 + 1));
+                    if (previousCell.value == mathResult)
+                    {
+                        return direction.DOWN;
+                    }
+                    return direction.LEFT;
+                case direction.DOWN:
+                    if (previousCell.value == (((4 * Math.Pow(previousCell.value,2))-(6*previousCell.value+3))))
+                    {
+                        return direction.RIGHT;
+                    }
+                    return direction.DOWN;
             }
 
-            return maze;
+            throw new InvalidOperationException("How the hell?");
         }
-
-        private bool inBounds(int index, int[,] array)
-        {
-            return (index >= 0) && (index < array.Length);
-        }
-        private void SecondHalf(int puzzleInput)
-        {
-            Console.WriteLine("Puzzle 3 100%");
-
-            Console.ReadKey();
-        }
-        public enum direction
-        {
-            EAST, NORTH, WEST, SOUTH
-        }
+    }
+    enum direction
+    {
+        RIGHT, LEFT, UP, DOWN
     }
 
     //Help Class
@@ -195,15 +100,18 @@ namespace day_3
         public int y;
         public List<Cell> Neighbours;
         public int value;
-        public int[,] maze;//Dont do this.. ever
+        public direction direction;
 
-        public Cell(int x, int y, int value)
+        public Cell(int x, int y, int value, direction direction)
         {
             this.x = x;
             this.y = y;
             this.value = value;
             this.Neighbours = new List<Cell>();
+            this.direction = direction;
         }
+
+
     }
 }
 
