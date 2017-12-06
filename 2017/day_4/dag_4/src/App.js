@@ -29,6 +29,12 @@ class App extends Component {
   }
 }
 
+class HelloMessage extends Component {
+  render() {
+    return <div>Hello <x-search>{this.props.name}</x-search>!</div>;
+  }
+}
+
 var filterFloat = function(value) {
     if (/^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/
       .test(value))
