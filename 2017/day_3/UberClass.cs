@@ -6,28 +6,34 @@ namespace day_3
 {
     public class UberClass
     {
-        static int mapsize = 70;
+        static int mapsize = 150;
         int[,] maze = new int[mapsize, mapsize];
+        List<Cell> AllCellsTest;
+        int nextval=1;
 
-        int input = 1337;
+        int input = 361527;//real
+        
         public UberClass()
         {
+            AllCellsTest = new List<Cell>();
+            input = 1337;//test
             Calculate(input);
         }
 
         private void Calculate(int input)
         {
             int iterations = 0;
-            int startingpoint_x = 32;
-            int startingpoint_y = 32;
+            int startingpoint_x = 70;
+            int startingpoint_y = 70;
             var startingCell = new Cell(startingpoint_x, startingpoint_y, ++iterations, direction.RIGHT);
             var previousCell = startingCell;
-            Stack<Cell> Cells = new Stack<Cell>();
+            AllCellsTest.Add(previousCell);
+            //Stack<Cell> Cells = new Stack<Cell>();
 
-            while(iterations < input)
+            while (iterations <= input)
             {
                 iterations++;
-                Cells.Push(previousCell);
+                //Cells.Push(previousCell);
                 previousCell = nextmove(previousCell);
             }
 
@@ -39,7 +45,7 @@ namespace day_3
 
             foreach (Cell cell in gac)
             {
-                map[cell.y,cell.x] = cell.value;
+                map[cell.y,cell.x] = cell.value;//937,5|235,697
             }
 
             for (int i = 0; i < map.GetLength(0); i++)
@@ -54,20 +60,6 @@ namespace day_3
                 Console.WriteLine();
             }
 
-            //for (int i = 0; i < map.GetLength(0); i++)
-            //{
-            //    for (int j = 0; j < map.GetLength(1); j++)
-            //    {
-
-            //        Cell gCell = gac.Where(g => g.x == i && g.y == j).SingleOrDefault();
-
-            //        if (gCell != null) { Console.Write("\t"+gCell.value+ "\t"); }
-            //        else { Console.Write("\t" + "0"+"\t"); }
-            //    }
-            //    Console.WriteLine();
-            //}
-
-
             Console.ReadKey();
         }
 
@@ -80,18 +72,22 @@ namespace day_3
                 case direction.RIGHT:
                     newCellToReturn = new Cell(previousCell.x+1,previousCell.y,previousCell.value+1,nextDirection);
                     newCellToReturn.Neighbours.Add(previousCell);
+                    AllCellsTest.Add(newCellToReturn);
                     break;
                 case direction.UP:
                     newCellToReturn = new Cell(previousCell.x, previousCell. y- 1, previousCell.value + 1, nextDirection);
                     newCellToReturn.Neighbours.Add(previousCell);
+                    AllCellsTest.Add(newCellToReturn);
                     break;
                 case direction.DOWN:
                     newCellToReturn = new Cell(previousCell.x, previousCell.y + 1, previousCell.value + 1, nextDirection);
                     newCellToReturn.Neighbours.Add(previousCell);
+                    AllCellsTest.Add(newCellToReturn);
                     break;
                 case direction.LEFT:
                     newCellToReturn = new Cell(previousCell.x - 1, previousCell.y, previousCell.value + 1, nextDirection);
                     newCellToReturn.Neighbours.Add(previousCell);
+                    AllCellsTest.Add(newCellToReturn);
                     break;
             }
 
@@ -134,8 +130,16 @@ namespace day_3
         private bool Occupied(Cell cell)
         {
             List<Cell> allCells = new List<Cell>();
-            allCells = GetAllCells(allCells, cell);
-
+            if (cell.value == Math.Pow(((2 * nextval) - 1), 2) && cell.value != 1)
+            {
+                nextval++;
+                AllCellsTest = new List<Cell>();
+            }
+            allCells = AllCellsTest;
+            
+            //allCells = GetAllCells(allCells, cell);
+            //AllCellsTest = allCells; 
+            //Console.WriteLine("Loading.. "+((double)cell.value/ (double)input *100) +"%");
             foreach (Cell neighbour in cell.Neighbours)
             {
                 switch (cell.direction)
@@ -159,10 +163,13 @@ namespace day_3
         }
         private List<Cell> GetAllCells(List<Cell> allCells, Cell cell)
         {
-            if(cell.Neighbours != null && cell.Neighbours.Count > 0)
+            allCells = new List<Cell>();
+
+            while(cell.Neighbours != null && cell.Neighbours.Count > 0)
             {
-                allCells.Add(cell.Neighbours.FirstOrDefault());
-                GetAllCells(allCells, cell.Neighbours.FirstOrDefault());
+                Cell neighbour = cell.Neighbours.First();
+                allCells.Add(neighbour);
+                cell = neighbour;
             }
 
             return allCells;
@@ -195,8 +202,6 @@ namespace day_3
             this.Neighbours = new List<Cell>();
             this.direction = direction;
         }
-
-
     }
 }
 
