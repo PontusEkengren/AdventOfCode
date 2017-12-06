@@ -10,16 +10,30 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to React</h1>
         </header>
-<h1>My First Web Page</h1>
-<p>My First Paragraph</p>
-		<p id="demo"></p>
 
-<script>
-document.getElementById("demo").innerHTML = 5 + 6;
-</script>
-      </div>
-    );
+		
+				
+
+		
+		test 
+		
+		scri
+		
+		filterFloat('421');
+		
+		
+		
+		
+		</div>
+		);
   }
+}
+
+var filterFloat = function(value) {
+    if (/^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/
+      .test(value))
+      return Number(value);
+  return NaN;
 }
 
 export default App;
