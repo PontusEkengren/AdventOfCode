@@ -6,7 +6,9 @@ namespace day_3
 {
     public class UberClass
     {
-        int[,] maze = new int[100,100];
+        static int mapsize = 70;
+        int[,] maze = new int[mapsize, mapsize];
+
         int input = 1337;
         public UberClass()
         {
@@ -16,8 +18,8 @@ namespace day_3
         private void Calculate(int input)
         {
             int iterations = 0;
-            int startingpoint_x = 1500;
-            int startingpoint_y = 1500;
+            int startingpoint_x = 32;
+            int startingpoint_y = 32;
             var startingCell = new Cell(startingpoint_x, startingpoint_y, ++iterations, direction.RIGHT);
             var previousCell = startingCell;
             Stack<Cell> Cells = new Stack<Cell>();
@@ -28,6 +30,45 @@ namespace day_3
                 Cells.Push(previousCell);
                 previousCell = nextmove(previousCell);
             }
+
+            //Print all
+            List<Cell> gac = new List<Cell>();
+            gac = GetAllCells(gac, previousCell);
+
+            int[,] map = new int[mapsize, mapsize];
+
+            foreach (Cell cell in gac)
+            {
+                map[cell.y,cell.x] = cell.value;
+            }
+
+            for (int i = 0; i < map.GetLength(0); i++)
+            {
+                for (int j = 0; j < map.GetLength(1); j++)
+                {
+                    if (map[i, j] != 0)
+                    {
+                        Console.Write("\t" + map[i, j] + "\t");
+                    }
+                }
+                Console.WriteLine();
+            }
+
+            //for (int i = 0; i < map.GetLength(0); i++)
+            //{
+            //    for (int j = 0; j < map.GetLength(1); j++)
+            //    {
+
+            //        Cell gCell = gac.Where(g => g.x == i && g.y == j).SingleOrDefault();
+
+            //        if (gCell != null) { Console.Write("\t"+gCell.value+ "\t"); }
+            //        else { Console.Write("\t" + "0"+"\t"); }
+            //    }
+            //    Console.WriteLine();
+            //}
+
+
+            Console.ReadKey();
         }
 
         private Cell nextmove(Cell previousCell)
@@ -100,41 +141,22 @@ namespace day_3
                 switch (cell.direction)
                 {
                     case direction.RIGHT:
-                        if(allCells.Any(n => n.x == cell.x && n.y-1 == cell.y)) { return true; }
+                        if(allCells.Any(n => n.x == cell.x && n.y == cell.y-1)) { return true; }
                         return false;
                     case direction.UP:
-                        if (allCells.Any(n => n.x-1== cell.x && n.y == cell.y)) { return true; }
+                        if (allCells.Any(n => n.x== cell.x - 1 && n.y == cell.y)) { return true; }
                         return false;
                     case direction.LEFT:
-                        if (allCells.Any(n => n.x == cell.x && n.y+1 == cell.y)) { return true; }
+                        if (allCells.Any(n => n.x == cell.x && n.y == cell.y+1)) { return true; }
                         return false;
                     case direction.DOWN:
-                        if (allCells.Any(n => n.x+1 == cell.x && n.y + 1 == cell.y)) { return true; }
+                        if (allCells.Any(n => n.x == cell.x+1 && n.y == cell.y)) { return true; }
                         return false;
                 }
             }
 
             return false;
         }
-
-        //private List<Cell> GetAllCells(Cell cell)
-        //{
-        //    List<Cell> AllCells = new List<Cell>();
-        //    Cell currentCell = cell;
-
-        //    while(currentCell.Neighbours.Count>0)
-        //    {
-        //        AllCells.Add(currentCell);
-        //        currentCell = NextCell(currentCell);
-        //    }
-        //    return AllCells;
-        //}
-
-        //private Cell NextCell(Cell currentCell)
-        //{
-        //    return currentCell.Neighbours.FirstOrDefault();
-        //}
-
         private List<Cell> GetAllCells(List<Cell> allCells, Cell cell)
         {
             if(cell.Neighbours != null && cell.Neighbours.Count > 0)
