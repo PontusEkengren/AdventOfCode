@@ -6,37 +6,39 @@ namespace day_3
 {
     public class UberClass
     {
-        static int mapsize = 150;
+        static int mapsize = 30;
         int[,] maze = new int[mapsize, mapsize];
         List<Cell> AllCellsTest;
-        int nextval=1;
-
+        int ringNumber = 1;
+        direction previousDirection = direction.RIGHT;
         int input = 361527;//real
-        
+
         public UberClass()
         {
+            //input = 304;
             AllCellsTest = new List<Cell>();
-            input = 1337;//test
             Calculate(input);
         }
 
         private void Calculate(int input)
         {
             int iterations = 0;
-            int startingpoint_x = 70;
-            int startingpoint_y = 70;
-            var startingCell = new Cell(startingpoint_x, startingpoint_y, ++iterations, direction.RIGHT);
+            int startingpoint_x = 15;
+            int startingpoint_y = 15;
+            var startingCell = new Cell(startingpoint_x, startingpoint_y, 1, direction.RIGHT, 1);
             var previousCell = startingCell;
             AllCellsTest.Add(previousCell);
             //Stack<Cell> Cells = new Stack<Cell>();
 
-            while (iterations <= input)
+            while (previousCell.value<= input)
             {
                 iterations++;
-                //Cells.Push(previousCell);
                 previousCell = nextmove(previousCell);
             }
 
+            ////previousCell = nextmove(previousCell);
+            Console.WriteLine("Solution: " + previousCell.value);//too high: 535694
+            
             //Print all
             List<Cell> gac = new List<Cell>();
             gac = GetAllCells(gac, previousCell);
@@ -45,7 +47,9 @@ namespace day_3
 
             foreach (Cell cell in gac)
             {
-                map[cell.y,cell.x] = cell.value;//937,5|235,697
+                Console.WriteLine("Solution: " + cell.value);//535694
+                //break;
+                map[cell.y, cell.x] = cell.value;//4,468|698,234->932
             }
 
             for (int i = 0; i < map.GetLength(0); i++)
@@ -70,22 +74,22 @@ namespace day_3
             switch (nextDirection)
             {
                 case direction.RIGHT:
-                    newCellToReturn = new Cell(previousCell.x+1,previousCell.y,previousCell.value+1,nextDirection);
+                    newCellToReturn = new Cell(previousCell.x + 1, previousCell.y, ValueAdder(AllCellsTest, previousCell.x + 1, previousCell.y), nextDirection, ringNumber);
                     newCellToReturn.Neighbours.Add(previousCell);
                     AllCellsTest.Add(newCellToReturn);
                     break;
                 case direction.UP:
-                    newCellToReturn = new Cell(previousCell.x, previousCell. y- 1, previousCell.value + 1, nextDirection);
+                    newCellToReturn = new Cell(previousCell.x, previousCell.y - 1, ValueAdder(AllCellsTest, previousCell.x, previousCell.y - 1), nextDirection, ringNumber);
                     newCellToReturn.Neighbours.Add(previousCell);
                     AllCellsTest.Add(newCellToReturn);
                     break;
                 case direction.DOWN:
-                    newCellToReturn = new Cell(previousCell.x, previousCell.y + 1, previousCell.value + 1, nextDirection);
+                    newCellToReturn = new Cell(previousCell.x, previousCell.y + 1, ValueAdder(AllCellsTest, previousCell.x, previousCell.y + 1), nextDirection, ringNumber);
                     newCellToReturn.Neighbours.Add(previousCell);
                     AllCellsTest.Add(newCellToReturn);
                     break;
                 case direction.LEFT:
-                    newCellToReturn = new Cell(previousCell.x - 1, previousCell.y, previousCell.value + 1, nextDirection);
+                    newCellToReturn = new Cell(previousCell.x - 1, previousCell.y, ValueAdder(AllCellsTest, previousCell.x - 1, previousCell.y), nextDirection, ringNumber);
                     newCellToReturn.Neighbours.Add(previousCell);
                     AllCellsTest.Add(newCellToReturn);
                     break;
@@ -94,12 +98,34 @@ namespace day_3
             return newCellToReturn;
         }
 
+        private int ValueAdder(List<Cell> allCellsTest,int x, int y)
+        {
+            int sum = 0;
+
+            foreach (Cell cellAround in allCellsTest)
+            {
+                sum += Surround(cellAround, x,y);
+            }
+
+            return sum;
+        }
+
+        private int Surround(Cell cellAround, int x, int y)
+        {
+            if (Math.Abs(cellAround.x - x) <= 1 && Math.Abs(cellAround.y - y) <= 1)
+            {
+                return cellAround.value;
+            }
+
+            return 0;
+        }
+
         private direction CalculateNextDirection(Cell previousCell)
         {
             switch (previousCell.direction)
             {
                 case direction.RIGHT:
-                    if (Occupied(previousCell) == false && GetAllCells(new List<Cell>(), previousCell).Count>=1)
+                    if (Occupied(previousCell) == false && GetAllCells(new List<Cell>(), previousCell).Count >= 1)
                     {
                         return direction.UP;
                     }
@@ -130,13 +156,12 @@ namespace day_3
         private bool Occupied(Cell cell)
         {
             List<Cell> allCells = new List<Cell>();
-            if (cell.value == Math.Pow(((2 * nextval) - 1), 2) && cell.value != 1)
+            if (BottomRightCorner(AllCellsTest, cell))
             {
-                nextval++;
-                AllCellsTest = new List<Cell>();
+                AllCellsTest = AllCellsTest.Where(x => x.ringValue > ringNumber - 3).ToList();
             }
             allCells = AllCellsTest;
-            
+
             //allCells = GetAllCells(allCells, cell);
             //AllCellsTest = allCells; 
             //Console.WriteLine("Loading.. "+((double)cell.value/ (double)input *100) +"%");
@@ -145,27 +170,38 @@ namespace day_3
                 switch (cell.direction)
                 {
                     case direction.RIGHT:
-                        if(allCells.Any(n => n.x == cell.x && n.y == cell.y-1)) { return true; }
+                        if (allCells.Any(n => n.x == cell.x && n.y == cell.y - 1)) { return true; }
                         return false;
                     case direction.UP:
-                        if (allCells.Any(n => n.x== cell.x - 1 && n.y == cell.y)) { return true; }
+                        if (allCells.Any(n => n.x == cell.x - 1 && n.y == cell.y)) { return true; }
                         return false;
                     case direction.LEFT:
-                        if (allCells.Any(n => n.x == cell.x && n.y == cell.y+1)) { return true; }
+                        if (allCells.Any(n => n.x == cell.x && n.y == cell.y + 1)) { return true; }
                         return false;
                     case direction.DOWN:
-                        if (allCells.Any(n => n.x == cell.x+1 && n.y == cell.y)) { return true; }
+                        if (allCells.Any(n => n.x == cell.x + 1 && n.y == cell.y)) { return true; }
                         return false;
                 }
             }
 
             return false;
         }
+
+        private bool BottomRightCorner(List<Cell> rings, Cell cell)
+        {
+            if (cell.direction == direction.RIGHT && (rings.Any(ringCell => ringCell.x == cell.x && ringCell.y == cell.y - 1) == false) && cell.value > 1)
+            {
+                ringNumber++;
+                return true;
+            }
+            return false;
+        }
+
         private List<Cell> GetAllCells(List<Cell> allCells, Cell cell)
         {
             allCells = new List<Cell>();
 
-            while(cell.Neighbours != null && cell.Neighbours.Count > 0)
+            while (cell.Neighbours != null && cell.Neighbours.Count > 0)
             {
                 Cell neighbour = cell.Neighbours.First();
                 allCells.Add(neighbour);
@@ -173,11 +209,6 @@ namespace day_3
             }
 
             return allCells;
-        }
-
-        private bool Occupied(Cell previousCell, direction lEFT)
-        {
-            throw new NotImplementedException();
         }
     }
     enum direction
@@ -193,14 +224,16 @@ namespace day_3
         public List<Cell> Neighbours;
         public int value;
         public direction direction;
+        public int ringValue;
 
-        public Cell(int x, int y, int value, direction direction)
+        public Cell(int x, int y, int value, direction direction, int ringValue)
         {
             this.x = x;
             this.y = y;
             this.value = value;
             this.Neighbours = new List<Cell>();
             this.direction = direction;
+            this.ringValue = ringValue;
         }
     }
 }
