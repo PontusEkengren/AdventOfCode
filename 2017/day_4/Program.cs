@@ -5,12 +5,13 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace day_4
+namespace AdventOfCode
 {
-    class Program
+    class day_2
     {
         static void Main(string[] args)
         {
+
 
             string puzzleInput = @"pphsv ojtou brvhsj cer ntfhlra udeh ccgtyzc zoyzmh jum lugbnk
 vxjnf fzqitnj uyfck blnl impo kxoow nngd worcm bdesehw
@@ -525,20 +526,82 @@ cbok koumkad otpozb pqcs emilpe wpcyvxd bock
 spjb xkkak anuvk ejoklh nyerw bsjp zxuq vcwitnd xxtjmjg zfgq xkpf
 juo pmiyoh xxk myphio ogfyf dovlmwm moevao qqxidn";
 
+            FirstHalf(puzzleInput);
+            SecondHalf(puzzleInput);
+        }
+
+
+        private static void FirstHalf(string puzzleInput)
+        {
+            Console.WriteLine("Puzzle 4 50%");
             int sum = 0;
 
             foreach (string input in puzzleInput.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
             {
-                string regexCompletedString = input+" ";
-                if (Regex.Matches(regexCompletedString, @"\b((?<word>(\w+\s+)+))(.|\n)*?\b\k<word>", RegexOptions.Compiled | RegexOptions.IgnoreCase).Count==0)
+                string regexCompletedString = input + " ";
+                if (Regex.Matches(regexCompletedString, @"\b((?<word>(\w+\s+)+))(.|\n)*?\b\k<word>", RegexOptions.Compiled | RegexOptions.IgnoreCase).Count == 0)
                 {
                     sum++;
                 }
             }
 
-            Console.WriteLine("sum: "+sum);
+            Console.WriteLine("sum: " + sum);
+        }
 
+        private static void SecondHalf(string puzzleInput)
+        {
+            Console.WriteLine("Puzzle 4 100%");
+
+            puzzleInput = @"iiii oiii ooii oooi oooo
+oiii ioii iioi iiio";//test
+
+            int sum = 0;
+
+            string[] puzzleLines = puzzleInput.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+
+            foreach (string input in puzzleLines)
+            {
+                string[] line = input.Split(' ');
+                for(int i=0;i< line.Length; i++)
+                {
+                    string[] lineWithoutKeyword = input.Replace(line[i], "").Split(' ');
+
+                    for(int j = 0; j < lineWithoutKeyword.Length; j++)
+                    {
+                        if(String.Equals(lineWithoutKeyword[j], line[i])== false && lineWithoutKeyword[j].Length == line[i].Length )
+                        {
+                            var stuff = "";
+                        }
+                    }
+                }
+            }
+
+            Console.WriteLine("sum: " + sum);
             Console.ReadKey();
         }
+
+        /*
+                         foreach(string word in input.Split(' '))
+                {
+                    var inputToCompare = input.Replace(word, "");
+
+                    var words = inputToCompare.Split(' ');
+
+                    foreach(string w  in words)
+                    {
+                        if(w.Length == word.Length)
+                        {
+                            if ()
+                            {
+
+                            }
+                        }
+                    }
+
+                    //var results = inputToCompare.Split().Where(str => word.All(c => str.Contains(c))).ToList();
+                    //if(Math.Abs(input.Split(' ').Count() - results.Count()) > 0) { sum++; }
+                }
+         * */
     }
 }
+
