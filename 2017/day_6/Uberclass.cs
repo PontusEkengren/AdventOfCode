@@ -23,35 +23,34 @@ namespace day_6
 
             int numberOfRoundRobins = GoAllKalahaOnThatDictionary(new Dictionary<int, Dictionary<int, int>>(), values, values.Values.Max(), values.First(x => x.Value == values.Values.Max()).Key);
 
-            Console.WriteLine("checksum: " /*+ checksum*/);
+            Console.WriteLine("checksum: " + numberOfRoundRobins/*+ checksum*/);
             Console.WriteLine();
         }
 
         private int GoAllKalahaOnThatDictionary(Dictionary<int, Dictionary<int, int>> seenDictionarys, Dictionary<int, int> workingValues, int workingValue, int workingIndex)
         {
-            int NumberOfDictKey = seenDictionarys.Keys.Count > 0 ? seenDictionarys.Keys.Count + 1 : 0;
-            seenDictionarys.Add(NumberOfDictKey, workingValues);
-            workingValues[workingIndex] = 0;
-
-            while (workingValue > 0)
+            while (true)
             {
-                workingIndex++;
-                workingValues[((workingIndex) % workingValues.Keys.Count)]++;
-                workingValue--;
+                Dictionary<int, int> newValues = new Dictionary<int, int>(workingValues);
+                if (seenDictionarys.Any(x => x.Key == newValues.Values.GetHashCode()))
+                    break;
+
+                seenDictionarys.Add(workingValues.Values.GetHashCode(), workingValues);
+                workingValues[workingIndex] = 0;
+
+                while (workingValue > 0)
+                {
+                    workingIndex++;
+                    workingValues[((workingIndex) % workingValues.Keys.Count)]++;
+                    workingValue--;
+                }
+
+                workingValues = new Dictionary<int, int>(workingValues);
+                workingValue = newValues.Values.Max();
+                workingIndex = newValues.First(x => x.Value == workingValue).Key;
             }
 
-            Dictionary<int, int> newValues = new Dictionary<int, int>(workingValues);
-            int maxvalue = newValues.Values.Max();
-            int maxvalue_index = newValues.First(x => x.Value == maxvalue).Key;
-
-            if (seenDictionarys.Any(x => x.Value == newValues))
-            {
-                return seenDictionarys.Keys.Count;
-            }
-            else
-            {
-                return GoAllKalahaOnThatDictionary(seenDictionarys, newValues, maxvalue, maxvalue_index);
-            }
+            return seenDictionarys.Keys.Count;
         }
 
         public void SecondHalf(string puzzleInput)
