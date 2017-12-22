@@ -34,10 +34,10 @@ namespace day_6
                 Dictionary<int, int> newValues = new Dictionary<int, int>(workingValues);
                 var stuff = newValues.Values.GetHashCode();
 
-                if (seenDictionarys.Any(x => x.Key == GetStringFromDictionaryValues(newValues.Values)))
+                if (seenDictionarys.Any(x => x.Key == String.Join("-", newValues.Values)))
                     break;
 
-                seenDictionarys.Add(GetStringFromDictionaryValues(workingValues.Values), workingValues);
+                seenDictionarys.Add(String.Join("-", workingValues.Values), workingValues);
                 workingValues[workingIndex] = 0;
 
                 while (workingValue > 0)
@@ -53,18 +53,6 @@ namespace day_6
             }
 
             return seenDictionarys.Keys.Count;
-        }
-
-        private string GetStringFromDictionaryValues(Dictionary<int, int>.ValueCollection values)
-        {
-            string result = "";
-
-            foreach(int v in values)
-            {
-                result += v;
-            }
-
-            return result;
         }
 
         public void SecondHalf(string puzzleInput)
