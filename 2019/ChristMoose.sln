@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2050
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChristMoose", "ChristMoose\ChristMoose.csproj", "{3A15A60E-9644-4065-BA00-289D21350261}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChristMoose", "ChristMoose\ChristMoose.csproj", "{3A15A60E-9644-4065-BA00-289D21350261}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PresentQualityControll", "XUnitTestProject1\PresentQualityControll.csproj", "{0349657B-7267-46CC-B6F0-14EE598FBB45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{3A15A60E-9644-4065-BA00-289D21350261}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A15A60E-9644-4065-BA00-289D21350261}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A15A60E-9644-4065-BA00-289D21350261}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0349657B-7267-46CC-B6F0-14EE598FBB45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0349657B-7267-46CC-B6F0-14EE598FBB45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0349657B-7267-46CC-B6F0-14EE598FBB45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0349657B-7267-46CC-B6F0-14EE598FBB45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
